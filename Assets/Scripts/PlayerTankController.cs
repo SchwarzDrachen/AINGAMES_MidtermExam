@@ -13,6 +13,8 @@ public class PlayerTankController : MonoBehaviour
     private float turretRotSpeed = 10.0f;
     public float maxForwardSpeed = 10.0f;
     public float maxBackwardSpeed = -10.0f;
+    [SerializeField] PowerUp PUManager;
+    [SerializeField] private GameObject powerup;
 
     //Bullet shooting rate
     protected float shootRate;
@@ -100,6 +102,12 @@ public class PlayerTankController : MonoBehaviour
 
                 Instantiate(bullet, bulletSpawnPoint.position, bulletSpawnPoint.rotation);
             }
+        }
+    }
+
+    public void OnCollisionEnter(Collision collision){
+        if(collision.gameObject.GetComponent<PowerUp>() != null){
+            
         }
     }
 }

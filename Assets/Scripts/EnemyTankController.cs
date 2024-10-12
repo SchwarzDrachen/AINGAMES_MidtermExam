@@ -34,12 +34,10 @@ public class EnemyTankController : MonoBehaviour
     [SerializeField] private GameObject bullet;
     [SerializeField] private GameObject powerup;
     [SerializeField] private PlayerTankController playerObject;
-    
+    [SerializeField] PowerUp PUManager;
     private Transform currentTarget;
     private Health health;
-
     private Transform enemyTurret;
-
     public float distanceToPlayer;
     private Selector rootNode;
     private Sequence s_Patrol;
@@ -62,7 +60,7 @@ public class EnemyTankController : MonoBehaviour
    private void Awake()
     {
         health = GetComponent<Health>();
-        playerObject = GetComponent<PlayerTankController>();
+        //playerObject = GetComponent<PlayerTankController>();
         enemyTurret = gameObject.transform.GetChild(0).transform;
     }
 
@@ -159,8 +157,12 @@ public class EnemyTankController : MonoBehaviour
     {
         if (collision.gameObject.GetComponent<Bullet>() != null)
         {
-            health.TakeDamage(playerObject.playerDamage);
-            Debug.Log("Player Damage: "+ playerObject.playerDamage);
+            if(PUManager.DamageBoostActive){
+                health.TakeDamage(1 * PUManager.extraDamage);
+            }
+            else{
+                health.TakeDamage(1);
+            }
         }
     }
 

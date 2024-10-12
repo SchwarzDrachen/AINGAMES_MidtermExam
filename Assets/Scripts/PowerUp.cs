@@ -4,15 +4,17 @@ using UnityEngine;
 
 public class PowerUp : MonoBehaviour
 {
+
+    public float extraDamage;
+    public bool DamageBoostActive = false
     // Start is called before the first frame update
     void Start()
     {
-        
+        extraDamage = 5f;
     }
 
-    // Update is called once per frame
-    void Update()
+    public void DamageBoost()
     {
-        
+        DamageBoostActive = true;
     }
 }
