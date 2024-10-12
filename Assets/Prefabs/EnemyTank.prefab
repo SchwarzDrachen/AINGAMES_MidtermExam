@@ -245,6 +245,7 @@ MonoBehaviour:
   deathParticle: {fileID: 1374926205213904, guid: dfa047d8849b3754c884ea23461e6633,
     type: 3}
   bullet: {fileID: 1600686159972608, guid: 1880d0d4a56871241aeb543c56fefcd5, type: 3}
+  powerup: {fileID: 5599361942163865817, guid: ce0fdb777f947524cbb7211c2e9f5afe, type: 3}
   distanceToPlayer: 0
 --- !u!114 &6530508465057767906
 MonoBehaviour:
@@ -260,6 +261,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxHealth: 10
   healthFill: {fileID: 5962251094829633010}
+  currentHealth: 0
 --- !u!1 &2074139705228685238
 GameObject:
   m_ObjectHideFlags: 0

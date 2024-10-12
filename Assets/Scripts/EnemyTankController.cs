@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.AI;
 using System;
 using UnityEngine.UIElements;
+using Panda.Examples.PlayTag;
 
 public class EnemyTankController : MonoBehaviour
 {
@@ -31,6 +32,9 @@ public class EnemyTankController : MonoBehaviour
     [SerializeField] private Transform bulletSpawnPoint;
     [SerializeField] private GameObject deathParticle;
     [SerializeField] private GameObject bullet;
+    [SerializeField] private GameObject powerup;
+    [SerializeField] private PlayerTankController playerObject;
+    
     private Transform currentTarget;
     private Health health;
 
@@ -53,10 +57,12 @@ public class EnemyTankController : MonoBehaviour
     private Sequence s_Attack;
     private ActionNode an_PlayerWithinRange;
     private ActionNode an_Attack;
+    private Sequence s_Death;
+    private ActionNode an_Death;
    private void Awake()
     {
         health = GetComponent<Health>();
-        //  player = GameObject.Find("PlayerTank").transform;
+        playerObject = GetComponent<PlayerTankController>();
         enemyTurret = gameObject.transform.GetChild(0).transform;
     }
 
@@ -71,6 +77,8 @@ public class EnemyTankController : MonoBehaviour
 
        an_PlayerWithinRange = new ActionNode(PlayerWithinRange);
        an_Attack = new ActionNode(Attack);
+
+       an_Death = new ActionNode(Death);
 
        in_EnemyNear = new Inverter(an_EnemyNear);
        in_HPZero = new Inverter(an_HPZero);
@@ -96,18 +104,23 @@ public class EnemyTankController : MonoBehaviour
         attackSequenceNode.Add(in_HPZero);
         attackSequenceNode.Add(an_Attack);
         s_Attack = new Sequence(attackSequenceNode);
+    
+    List<Node> deathSequenceNode = new();
+        deathSequenceNode.Add(an_HPZero);
+        deathSequenceNode.Add(an_Death);
+        s_Death = new Sequence(deathSequenceNode);
 
        List<Node> rootNodeSelector = new();
        rootNodeSelector.Add(s_Patrol);
        rootNodeSelector.Add(s_Chase);
        rootNodeSelector.Add(s_Attack);
+       rootNodeSelector.Add(s_Death);
        rootNode = new Selector(rootNodeSelector);
 
     }
 
     private void Update()
     {
-        Debug.Log(currentTarget);
         rootNode.Evaluate();
     }
 
@@ -137,15 +150,17 @@ public class EnemyTankController : MonoBehaviour
 
     public void Die()
     {
+        Instantiate(powerup, transform.position, Quaternion.identity);
         Instantiate(deathParticle, transform.position, Quaternion.identity);
-        Destroy(this.gameObject);
+        Destroy(gameObject);
     }
 
     private void OnCollisionEnter(Collision collision)
     {
         if (collision.gameObject.GetComponent<Bullet>() != null)
         {
-            health.TakeDamage(1);
+            health.TakeDamage(playerObject.playerDamage);
+            Debug.Log("Player Damage: "+ playerObject.playerDamage);
         }
     }
 
@@ -249,10 +264,8 @@ public class EnemyTankController : MonoBehaviour
 
    private NodeState Death()
    {
-    Instantiate(deathParticle, transform.position, Quaternion.identity);
-    Destroy(this.gameObject);
-
-    Instantiate(powerupPrefab, transform.position, Quaternion.identity);
+    Die();
+    return NodeState.SUCCESS;
    }
    //   HELLO
 }

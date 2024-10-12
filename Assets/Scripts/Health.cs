@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.ShaderKeywordFilter;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -9,8 +10,9 @@ public class Health : MonoBehaviour
     private float maxHealth;
     [SerializeField]
     private Image healthFill;
-
+    [SerializeField] 
     private float currentHealth;
+
     public bool IsDead => currentHealth <= 0;
 
     private void Start()

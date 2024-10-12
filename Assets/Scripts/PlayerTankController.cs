@@ -4,6 +4,8 @@ using System.Collections;
 public class PlayerTankController : MonoBehaviour
 {
     public GameObject bullet;
+
+    public float playerDamage = 1f;
 	
     private Transform turret;
     private Transform bulletSpawnPoint;    
