@@ -4,17 +4,21 @@ using UnityEngine;
 
 public class PowerUp : MonoBehaviour
 {
-
-    public float extraDamage;
-    public bool DamageBoostActive = false
-    // Start is called before the first frame update
-    void Start()
+    public static bool DamageIsActive = false;
+    public PlayerTankController player;
+    public void OnTriggerEnter(UnityEngine.Collider other)
     {
-        extraDamage = 5f;
-    }
+        if (other.gameObject.tag == "Player")
+        {
+            Debug.Log("POWER UP ACTIVE");
+            DamageIsActive = true;
 
-    public void DamageBoost()
-    {
-        DamageBoostActive = true;
+            //gameObject.Vector3.Movetow = 
+
+            StartCoroutine(player.DamageTimer());
+
+            Destroy(gameObject);
+
+        }
     }
 }

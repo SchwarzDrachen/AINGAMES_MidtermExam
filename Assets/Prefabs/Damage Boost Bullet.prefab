@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 114590217840212438}
   - component: {fileID: 54208535872579454}
   m_Layer: 0
-  m_Name: Bullet
+  m_Name: Damage Boost Bullet
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -85,7 +85,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: cca74f0433d7bea47ac9b8e27f40f59c, type: 2}
+  - {fileID: 2100000, guid: 8ace0d1a331a4d446ae50c40a1e5fb74, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
