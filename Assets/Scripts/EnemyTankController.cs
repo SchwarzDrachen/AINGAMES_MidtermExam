@@ -1,9 +1,9 @@
+using Panda;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Panda;
-using System;
 using UnityEngine.AI;
+using System;
 using UnityEngine.UIElements;
 
 public class EnemyTankController : MonoBehaviour
@@ -19,9 +19,10 @@ public class EnemyTankController : MonoBehaviour
     // How "close" from the target waypoint until we choose another waypoint
     [SerializeField] private float waypointDistance = 1.0f;
     // How often the enemy will shoot
-    [SerializeField] private float shootRate = 1.0f;
-    // The array of transform points in the scene that the agent will move
+    [SerializeField] private float shootRate = 20.0f;
+    // The array of transform points in the scene hat the agent will move
     // towards to while patrolling
+    private float fireCD = 0f;
     [SerializeField] private Transform[] waypoints;
     // Reference to the player tank
     [SerializeField] private Transform player;
@@ -32,6 +33,10 @@ public class EnemyTankController : MonoBehaviour
     [SerializeField] private GameObject bullet;
     private Transform currentTarget;
     private Health health;
+
+    private Transform enemyTurret;
+
+    public float distanceToPlayer;
     private Selector rootNode;
     private Sequence s_Patrol;
     private Inverter in_EnemyNear;
@@ -45,10 +50,14 @@ public class EnemyTankController : MonoBehaviour
     private Inverter in_AttackNear;
     private ActionNode an_AttackNear;
     private ActionNode an_ChaseMovement;
+    private Sequence s_Attack;
+    private ActionNode an_PlayerWithinRange;
+    private ActionNode an_Attack;
    private void Awake()
     {
         health = GetComponent<Health>();
-        
+        //  player = GameObject.Find("PlayerTank").transform;
+        enemyTurret = gameObject.transform.GetChild(0).transform;
     }
 
     private void Start(){
@@ -59,6 +68,9 @@ public class EnemyTankController : MonoBehaviour
        an_PlayerFar = new ActionNode(PlayerFar);
        an_AttackNear = new ActionNode(AttackNear);
        an_ChaseMovement = new ActionNode(ChaseMovement);
+
+       an_PlayerWithinRange = new ActionNode(PlayerWithinRange);
+       an_Attack = new ActionNode(Attack);
 
        in_EnemyNear = new Inverter(an_EnemyNear);
        in_HPZero = new Inverter(an_HPZero);
@@ -79,10 +91,16 @@ public class EnemyTankController : MonoBehaviour
         chaseSequenceNode.Add(an_ChaseMovement);
         s_Chase = new Sequence(chaseSequenceNode);
 
+    List<Node> attackSequenceNode = new();
+        attackSequenceNode.Add(an_PlayerWithinRange);
+        attackSequenceNode.Add(in_HPZero);
+        attackSequenceNode.Add(an_Attack);
+        s_Attack = new Sequence(attackSequenceNode);
 
        List<Node> rootNodeSelector = new();
        rootNodeSelector.Add(s_Patrol);
        rootNodeSelector.Add(s_Chase);
+       rootNodeSelector.Add(s_Attack);
        rootNode = new Selector(rootNodeSelector);
 
     }
@@ -108,7 +126,13 @@ public class EnemyTankController : MonoBehaviour
 
     public void ShootBullet()
     {
-        Instantiate(bullet, bulletSpawnPoint.position, bulletSpawnPoint.rotation);
+        
+        fireCD += 0.1f;
+        if (fireCD >= shootRate)
+        {
+            Instantiate(bullet, bulletSpawnPoint.position, bulletSpawnPoint.rotation);
+            fireCD = 0f;
+        }
     }
 
     public void Die()
@@ -194,5 +218,40 @@ public class EnemyTankController : MonoBehaviour
             MoveToTarget(currentTarget);
         }
         return NodeState.SUCCESS;
+   }
+
+   private NodeState PlayerWithinRange()
+   {
+    if (Vector3.Distance(agent.position, player.position) <= attackDistance)
+    {
+        return NodeState.SUCCESS;
+    }
+    else
+    {
+        return NodeState.FAILURE;
+    }
+   }
+
+   private NodeState Attack()
+   {
+    // Get the vector pointing towards the direction of the target
+    Vector3 targetDirection = currentTarget.position - transform.position;
+    // Get the rotation that faces the targetDirection
+    Quaternion targetRotation = Quaternion.LookRotation(targetDirection);
+    // Rotate the tank to face the targetRotation
+    enemyTurret.transform.rotation = Quaternion.Slerp(enemyTurret.transform.rotation, targetRotation,
+        Time.deltaTime * rotateSpeed);
+
+    ShootBullet();
+
+    return NodeState.SUCCESS;
+   }
+
+   private NodeState Death()
+   {
+    Instantiate(deathParticle, transform.position, Quaternion.identity);
+    Destroy(this.gameObject);
+
+    Instantiate(powerupPrefab, transform.position, Quaternion.identity);
    }
 }

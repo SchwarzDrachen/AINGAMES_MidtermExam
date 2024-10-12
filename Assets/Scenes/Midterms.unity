@@ -38,7 +38,6 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 642098264}
-  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &4
 LightmapSettings:
@@ -486,6 +485,12 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 293391798}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &433697149 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1663211502884150, guid: 9b4cbb0b3fdc35a41854150787f02766,
+    type: 3}
+  m_PrefabInstance: {fileID: 1848203127}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &505732271
 GameObject:
   m_ObjectHideFlags: 0
@@ -659,6 +664,31 @@ PrefabInstance:
       propertyPath: m_Name
       value: EnemyTank (2)
       objectReference: {fileID: 0}
+    - target: {fileID: 6683888780234261893, guid: 3672c531f10ac704cace86fa6ee7fff8,
+        type: 3}
+      propertyPath: player
+      value: 
+      objectReference: {fileID: 1585883698}
+    - target: {fileID: 6683888780234261893, guid: 3672c531f10ac704cace86fa6ee7fff8,
+        type: 3}
+      propertyPath: waypoints.Array.data[0]
+      value: 
+      objectReference: {fileID: 30074306}
+    - target: {fileID: 6683888780234261893, guid: 3672c531f10ac704cace86fa6ee7fff8,
+        type: 3}
+      propertyPath: waypoints.Array.data[1]
+      value: 
+      objectReference: {fileID: 798293365}
+    - target: {fileID: 6683888780234261893, guid: 3672c531f10ac704cace86fa6ee7fff8,
+        type: 3}
+      propertyPath: waypoints.Array.data[2]
+      value: 
+      objectReference: {fileID: 1337552218}
+    - target: {fileID: 6683888780234261893, guid: 3672c531f10ac704cace86fa6ee7fff8,
+        type: 3}
+      propertyPath: waypoints.Array.data[3]
+      value: 
+      objectReference: {fileID: 989426670}
     - target: {fileID: 7220287984687532499, guid: 3672c531f10ac704cace86fa6ee7fff8,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1064,6 +1094,31 @@ PrefabInstance:
       propertyPath: m_Name
       value: EnemyTank (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 6683888780234261893, guid: 3672c531f10ac704cace86fa6ee7fff8,
+        type: 3}
+      propertyPath: player
+      value: 
+      objectReference: {fileID: 1585883698}
+    - target: {fileID: 6683888780234261893, guid: 3672c531f10ac704cace86fa6ee7fff8,
+        type: 3}
+      propertyPath: waypoints.Array.data[0]
+      value: 
+      objectReference: {fileID: 30074306}
+    - target: {fileID: 6683888780234261893, guid: 3672c531f10ac704cace86fa6ee7fff8,
+        type: 3}
+      propertyPath: waypoints.Array.data[1]
+      value: 
+      objectReference: {fileID: 798293365}
+    - target: {fileID: 6683888780234261893, guid: 3672c531f10ac704cace86fa6ee7fff8,
+        type: 3}
+      propertyPath: waypoints.Array.data[2]
+      value: 
+      objectReference: {fileID: 1337552218}
+    - target: {fileID: 6683888780234261893, guid: 3672c531f10ac704cace86fa6ee7fff8,
+        type: 3}
+      propertyPath: waypoints.Array.data[3]
+      value: 
+      objectReference: {fileID: 989426670}
     - target: {fileID: 7220287984687532499, guid: 3672c531f10ac704cace86fa6ee7fff8,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1231,6 +1286,28 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 1848203127}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1585883704
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 433697149}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 17e43e7170fb45b4b81dcd16d0ff55d9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  scripts:
+  - {fileID: 0}
+  autoReset: 1
+  tickOn: 0
+  sourceInfos:
+  - isFoldout: 1
+    breakPoints: 
+    breakPointStatuses: 
+    collapsedLines: 
+    btScript: 
 --- !u!1001 &1848203127
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1274,7 +1351,11 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1663211502884150, guid: 9b4cbb0b3fdc35a41854150787f02766,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1585883704}
   m_SourcePrefab: {fileID: 100100000, guid: 9b4cbb0b3fdc35a41854150787f02766, type: 3}
 --- !u!1001 &8405591981073478245
 PrefabInstance:
@@ -1289,6 +1370,31 @@ PrefabInstance:
       propertyPath: m_Name
       value: EnemyTank
       objectReference: {fileID: 0}
+    - target: {fileID: 6683888780234261893, guid: 3672c531f10ac704cace86fa6ee7fff8,
+        type: 3}
+      propertyPath: player
+      value: 
+      objectReference: {fileID: 1585883698}
+    - target: {fileID: 6683888780234261893, guid: 3672c531f10ac704cace86fa6ee7fff8,
+        type: 3}
+      propertyPath: waypoints.Array.data[0]
+      value: 
+      objectReference: {fileID: 30074306}
+    - target: {fileID: 6683888780234261893, guid: 3672c531f10ac704cace86fa6ee7fff8,
+        type: 3}
+      propertyPath: waypoints.Array.data[1]
+      value: 
+      objectReference: {fileID: 798293365}
+    - target: {fileID: 6683888780234261893, guid: 3672c531f10ac704cace86fa6ee7fff8,
+        type: 3}
+      propertyPath: waypoints.Array.data[2]
+      value: 
+      objectReference: {fileID: 1337552218}
+    - target: {fileID: 6683888780234261893, guid: 3672c531f10ac704cace86fa6ee7fff8,
+        type: 3}
+      propertyPath: waypoints.Array.data[3]
+      value: 
+      objectReference: {fileID: 989426670}
     - target: {fileID: 7220287984687532499, guid: 3672c531f10ac704cace86fa6ee7fff8,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1339,8 +1445,7 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents:
-    - {fileID: 6582506478519984305, guid: 3672c531f10ac704cace86fa6ee7fff8, type: 3}
+    m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []

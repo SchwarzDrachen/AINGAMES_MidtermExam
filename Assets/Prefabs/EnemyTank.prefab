@@ -106,7 +106,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1365004943762535447}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.00000026631545, y: -0.9999976, z: -5.8368693e-10, w: -0.0021913275}
+  m_LocalRotation: {x: -0, y: -0.9999976, z: 0, w: -0.0021903026}
   m_LocalPosition: {x: 6.88, y: -0.5, z: 0.51}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -230,15 +230,22 @@ MonoBehaviour:
   rotateSpeed: 10
   chaseDistance: 20
   attackDistance: 10
+  fleeDistance: 20
   waypointDistance: 1
-  shootRate: 1
-  waypoints: []
+  shootRate: 20
+  waypoints:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
   player: {fileID: 0}
+  agent: {fileID: 7220287984687532499}
   turret: {fileID: 4807123239002768466}
   bulletSpawnPoint: {fileID: 1848580114702650809}
   deathParticle: {fileID: 1374926205213904, guid: dfa047d8849b3754c884ea23461e6633,
     type: 3}
   bullet: {fileID: 1600686159972608, guid: 1880d0d4a56871241aeb543c56fefcd5, type: 3}
+  distanceToPlayer: 0
 --- !u!114 &6530508465057767906
 MonoBehaviour:
   m_ObjectHideFlags: 0
