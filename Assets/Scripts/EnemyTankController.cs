@@ -161,7 +161,7 @@ public class EnemyTankController : MonoBehaviour
     {
         if (collision.gameObject.GetComponent<Bullet>() != null)
         {
-            if (PowerUp.DamageIsActive)
+            if (PowerUpManager.DamageIsActive)
             {
                 health.TakeDamage(playerObject.playerDamageBoosted);
                 Debug.Log("Player Damage: "+ playerObject.playerDamageBoosted);

@@ -101,7 +101,7 @@ public class PlayerTankController : MonoBehaviour
             {
                 elapsedTime = 0.0f;
 
-                if (PowerUp.DamageIsActive)
+                if (PowerUpManager.DamageIsActive)
                 {
                     Instantiate(damagebullet, bulletSpawnPoint.position, bulletSpawnPoint.rotation);
                 }
@@ -111,12 +111,5 @@ public class PlayerTankController : MonoBehaviour
                 }
             }
         }
-    }
-
-    public IEnumerator DamageTimer()
-    {
-        Debug.Log("TIMER");
-        yield return new WaitForSeconds(3.0f);
-        PowerUp.DamageIsActive = false;
     }
 }
