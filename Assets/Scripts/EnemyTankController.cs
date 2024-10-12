@@ -5,6 +5,7 @@ using UnityEngine.AI;
 using System;
 using UnityEngine.UIElements;
 using Panda.Examples.PlayTag;
+using System.Runtime.CompilerServices;
 
 public class EnemyTankController : MonoBehaviour
 {
@@ -55,9 +56,13 @@ public class EnemyTankController : MonoBehaviour
     private ActionNode an_ChaseMovement;
     private Sequence s_Attack;
     private ActionNode an_PlayerWithinRange;
+    private Inverter in_PlayerPower;
     private ActionNode an_Attack;
     private Sequence s_Death;
     private ActionNode an_Death;
+    private Sequence s_Flee;
+    private ActionNode an_PlayerPower;
+    private ActionNode an_FleeMovement;
    private void Awake()
     {
         health = GetComponent<Health>();
@@ -78,14 +83,20 @@ public class EnemyTankController : MonoBehaviour
 
        an_Death = new ActionNode(Death);
 
+        an_PlayerPower = new ActionNode(PlayerPower);
+       an_FleeMovement = new ActionNode(FleeMovement);
+
        in_EnemyNear = new Inverter(an_EnemyNear);
        in_HPZero = new Inverter(an_HPZero);
 
        in_PlayerFar = new Inverter(an_PlayerFar);
        in_AttackNear = new Inverter(an_AttackNear);
 
+       in_PlayerPower = new Inverter(an_PlayerPower);
+
        List<Node> patrolSequenceNode = new();
        patrolSequenceNode.Add(in_EnemyNear);
+       //patrolSequenceNode.Add(in_PlayerPower);
        patrolSequenceNode.Add(in_HPZero);
        patrolSequenceNode.Add(an_PatrolMovement);
        s_Patrol = new Sequence(patrolSequenceNode);
@@ -93,12 +104,14 @@ public class EnemyTankController : MonoBehaviour
        List<Node> chaseSequenceNode = new();
         chaseSequenceNode.Add(in_PlayerFar);
         chaseSequenceNode.Add(in_AttackNear);
+        chaseSequenceNode.Add(in_PlayerPower);
         chaseSequenceNode.Add(in_HPZero);
         chaseSequenceNode.Add(an_ChaseMovement);
         s_Chase = new Sequence(chaseSequenceNode);
 
     List<Node> attackSequenceNode = new();
         attackSequenceNode.Add(an_PlayerWithinRange);
+        attackSequenceNode.Add(in_PlayerPower);
         attackSequenceNode.Add(in_HPZero);
         attackSequenceNode.Add(an_Attack);
         s_Attack = new Sequence(attackSequenceNode);
@@ -108,11 +121,18 @@ public class EnemyTankController : MonoBehaviour
         deathSequenceNode.Add(an_Death);
         s_Death = new Sequence(deathSequenceNode);
 
+        List<Node> fleeSequenceNode = new();
+        fleeSequenceNode.Add(an_PlayerPower);
+        fleeSequenceNode.Add(in_HPZero);
+        fleeSequenceNode.Add(an_FleeMovement);
+        s_Flee = new Sequence(fleeSequenceNode);
+
        List<Node> rootNodeSelector = new();
        rootNodeSelector.Add(s_Patrol);
        rootNodeSelector.Add(s_Chase);
        rootNodeSelector.Add(s_Attack);
        rootNodeSelector.Add(s_Death);
+       rootNodeSelector.Add(s_Flee);
        rootNode = new Selector(rootNodeSelector);
 
     }
@@ -278,5 +298,22 @@ public class EnemyTankController : MonoBehaviour
     Die();
     return NodeState.SUCCESS;
    }
-   //   HELLO
+   
+   private NodeState PlayerPower(){
+    if(PowerUp.DamageIsActive){
+        return NodeState.SUCCESS;
+    }
+    else{
+        return NodeState.FAILURE;
+    }
+   }
+   private NodeState FleeMovement(){
+    float distanceToCurrentTarget = Vector3.Distance(agent.position, player.position);
+        if(distanceToCurrentTarget <= fleeDistance){
+            transform.LookAt(player);
+            transform.Rotate(0,180,0);
+            transform.Translate(Vector3.forward);
+        }
+        return NodeState.SUCCESS;
+   }
 }
