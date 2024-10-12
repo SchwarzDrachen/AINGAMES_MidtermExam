@@ -1,5 +1,4 @@
 using Panda;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
@@ -62,7 +61,6 @@ public class EnemyTankController : MonoBehaviour
    private void Awake()
     {
         health = GetComponent<Health>();
-        playerObject = GetComponent<PlayerTankController>();
         enemyTurret = gameObject.transform.GetChild(0).transform;
     }
 
@@ -139,7 +137,6 @@ public class EnemyTankController : MonoBehaviour
 
     public void ShootBullet()
     {
-        
         fireCD += 0.1f;
         if (fireCD >= shootRate)
         {
@@ -150,7 +147,12 @@ public class EnemyTankController : MonoBehaviour
 
     public void Die()
     {
-        Instantiate(powerup, transform.position, Quaternion.identity);
+        float dropChance = UnityEngine.Random.Range(0,10);
+        if (dropChance <= 9)
+        {
+            Debug.Log("POWER UP DROPPED; drop chance is " +dropChance );
+            Instantiate(powerup, transform.position, Quaternion.identity);
+        }
         Instantiate(deathParticle, transform.position, Quaternion.identity);
         Destroy(gameObject);
     }
@@ -159,8 +161,17 @@ public class EnemyTankController : MonoBehaviour
     {
         if (collision.gameObject.GetComponent<Bullet>() != null)
         {
-            health.TakeDamage(playerObject.playerDamage);
-            Debug.Log("Player Damage: "+ playerObject.playerDamage);
+            if (PowerUp.DamageIsActive)
+            {
+                health.TakeDamage(playerObject.playerDamageBoosted);
+                Debug.Log("Player Damage: "+ playerObject.playerDamageBoosted);
+            }
+            else
+            {
+                health.TakeDamage(playerObject.playerDamage);
+                Debug.Log("Player Damage: "+ playerObject.playerDamage);
+            }
+            
         }
     }
 

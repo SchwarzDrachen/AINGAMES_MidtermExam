@@ -1,11 +1,15 @@
 using UnityEngine;
 using System.Collections;
+using System.Runtime.Serialization.Formatters;
 
 public class PlayerTankController : MonoBehaviour
 {
     public GameObject bullet;
+    public GameObject damagebullet;
 
     public float playerDamage = 1f;
+
+    public float playerDamageBoosted = 5f;
 	
     private Transform turret;
     private Transform bulletSpawnPoint;    
@@ -95,11 +99,24 @@ public class PlayerTankController : MonoBehaviour
         {
             if (elapsedTime >= shootRate)
             {
-                //Reset the time
                 elapsedTime = 0.0f;
 
-                Instantiate(bullet, bulletSpawnPoint.position, bulletSpawnPoint.rotation);
+                if (PowerUp.DamageIsActive)
+                {
+                    Instantiate(damagebullet, bulletSpawnPoint.position, bulletSpawnPoint.rotation);
+                }
+                else
+                {
+                    Instantiate(bullet, bulletSpawnPoint.position, bulletSpawnPoint.rotation);
+                }
             }
         }
+    }
+
+    public IEnumerator DamageTimer()
+    {
+        Debug.Log("TIMER");
+        yield return new WaitForSeconds(3.0f);
+        PowerUp.DamageIsActive = false;
     }
 }
