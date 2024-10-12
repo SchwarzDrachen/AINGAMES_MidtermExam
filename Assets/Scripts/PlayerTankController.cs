@@ -113,10 +113,5 @@ public class PlayerTankController : MonoBehaviour
         }
     }
 
-    public IEnumerator DamageTimer()
-    {
-        Debug.Log("TIMER");
-        yield return new WaitForSeconds(3.0f);
-        PowerUp.DamageIsActive = false;
-    }
+    
 }
