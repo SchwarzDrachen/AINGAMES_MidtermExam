@@ -1,4 +1,5 @@
 using UnityEngine;
+using Panda;
 
 public class EnemyTankController : MonoBehaviour
 {
@@ -23,6 +24,7 @@ public class EnemyTankController : MonoBehaviour
     [SerializeField] private Transform bulletSpawnPoint;
     [SerializeField] private GameObject deathParticle;
     [SerializeField] private GameObject bullet;
+    private Transform currentTarget;
 
     private Health health;
 
@@ -66,5 +68,21 @@ public class EnemyTankController : MonoBehaviour
         {
             health.TakeDamage(1);
         }
+    }
+
+    private void SetCurrentTarget(Transform target){
+        currentTarget = target;
+    }
+
+    [Task]
+    public void SetTargetWaypoint(){
+        //Randomize a value from the array
+        int randomIndex = Random.Range(0, waypoints.Length);
+        //Make sure that the new target is not the same as the previous waypoint
+        while(waypoints[randomIndex] == currentTarget){
+            //Keep randomizing until currentTarget is new
+            randomIndex = Random.Range(0, waypoints.Length);
+        }
+        SetCurrentTarget(waypoints[randomIndex]);
     }
 }
