@@ -1,5 +1,10 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using Panda;
+using System;
+using UnityEngine.AI;
+using UnityEngine.UIElements;
 
 public class EnemyTankController : MonoBehaviour
 {
@@ -7,8 +12,8 @@ public class EnemyTankController : MonoBehaviour
     [SerializeField] private float moveSpeed = 5.0f;
     [SerializeField] private float rotateSpeed = 10.0f;
     // How "close" to the player is considered as chasing range
-    [SerializeField] private float chaseDistance = 20.0f;
-    [SerializeField] private float attackDistance = 10.0f;
+    [SerializeField] private float chaseDistance = 10.0f;
+    [SerializeField] private float attackDistance = 5.0f;
     // How "far" from the player will the tank run away
     [SerializeField] private float fleeDistance = 20.0f;
     // How "close" from the target waypoint until we choose another waypoint
@@ -20,22 +25,72 @@ public class EnemyTankController : MonoBehaviour
     [SerializeField] private Transform[] waypoints;
     // Reference to the player tank
     [SerializeField] private Transform player;
+    [SerializeField] private Transform agent;
     [SerializeField] private Transform turret;
     [SerializeField] private Transform bulletSpawnPoint;
     [SerializeField] private GameObject deathParticle;
     [SerializeField] private GameObject bullet;
     private Transform currentTarget;
-
     private Health health;
-
-    private void Awake()
+    private Selector rootNode;
+    private Sequence s_Patrol;
+    private Inverter in_EnemyNear;
+    private ActionNode an_EnemyNear;
+    private Inverter in_HPZero;
+    private ActionNode an_HPZero;
+    private ActionNode an_PatrolMovement;
+    private Sequence s_Chase;
+    private Inverter in_PlayerFar;
+    private ActionNode an_PlayerFar;
+    private Inverter in_AttackNear;
+    private ActionNode an_AttackNear;
+    private ActionNode an_ChaseMovement;
+   private void Awake()
     {
         health = GetComponent<Health>();
+        
+    }
+
+    private void Start(){
+       an_EnemyNear = new ActionNode(EnemyNear);
+       an_HPZero = new ActionNode(HPZero);
+       an_PatrolMovement = new ActionNode(PatrolMovement);
+
+       an_PlayerFar = new ActionNode(PlayerFar);
+       an_AttackNear = new ActionNode(AttackNear);
+       an_ChaseMovement = new ActionNode(ChaseMovement);
+
+       in_EnemyNear = new Inverter(an_EnemyNear);
+       in_HPZero = new Inverter(an_HPZero);
+
+       in_PlayerFar = new Inverter(an_PlayerFar);
+       in_AttackNear = new Inverter(an_AttackNear);
+
+       List<Node> patrolSequenceNode = new();
+       patrolSequenceNode.Add(in_EnemyNear);
+       patrolSequenceNode.Add(in_HPZero);
+       patrolSequenceNode.Add(an_PatrolMovement);
+       s_Patrol = new Sequence(patrolSequenceNode);
+
+       List<Node> chaseSequenceNode = new();
+        chaseSequenceNode.Add(in_PlayerFar);
+        chaseSequenceNode.Add(in_AttackNear);
+        chaseSequenceNode.Add(in_HPZero);
+        chaseSequenceNode.Add(an_ChaseMovement);
+        s_Chase = new Sequence(chaseSequenceNode);
+
+
+       List<Node> rootNodeSelector = new();
+       rootNodeSelector.Add(s_Patrol);
+       rootNodeSelector.Add(s_Chase);
+       rootNode = new Selector(rootNodeSelector);
+
     }
 
     private void Update()
     {
-       
+        Debug.Log(currentTarget);
+        rootNode.Evaluate();
     }
 
     public void MoveToTarget(Transform currentTarget)
@@ -74,15 +129,70 @@ public class EnemyTankController : MonoBehaviour
         currentTarget = target;
     }
 
-    [Task]
-    public void SetTargetWaypoint(){
+    private void SetTargetWaypoint(){
         //Randomize a value from the array
-        int randomIndex = Random.Range(0, waypoints.Length);
+        int randomIndex = UnityEngine.Random.Range(0, waypoints.Length);
         //Make sure that the new target is not the same as the previous waypoint
         while(waypoints[randomIndex] == currentTarget){
             //Keep randomizing until currentTarget is new
-            randomIndex = Random.Range(0, waypoints.Length);
+            randomIndex = UnityEngine.Random.Range(0, waypoints.Length);
         }
         SetCurrentTarget(waypoints[randomIndex]);
     }
+
+   private NodeState EnemyNear(){
+        if(Vector3.Distance(agent.position,player.position) <= chaseDistance){
+            SetCurrentTarget(player);
+            return NodeState.SUCCESS;
+        }
+        else{
+            SetTargetWaypoint();
+            return NodeState.FAILURE;
+        }
+   }
+   private NodeState HPZero(){
+        //return  health.IsDead ? NodeState.SUCCESS : NodeState.FAILURE;
+        if(health.IsDead){
+            return NodeState.SUCCESS;
+        }
+        else{
+            return NodeState.FAILURE;
+        }
+   }
+   private NodeState PatrolMovement(){
+        float distanceToCurrentTarget = Vector3.Distance(agent.position, currentTarget.position);
+        if(distanceToCurrentTarget > waypointDistance){
+            MoveToTarget(currentTarget);
+        }
+        else{
+            SetTargetWaypoint();
+        }
+        return NodeState.SUCCESS;
+   }
+
+   private NodeState PlayerFar(){
+        if(Vector3.Distance(agent.position,player.position) >chaseDistance){
+            return NodeState.SUCCESS;
+        }
+        else{
+            return NodeState.FAILURE;
+        }
+   }
+
+   private NodeState AttackNear(){
+    if(Vector3.Distance(agent.position,player.position) <= attackDistance){
+            return NodeState.SUCCESS;
+        }
+        else{
+            return NodeState.FAILURE;
+        }
+   }
+
+   private NodeState ChaseMovement(){
+         float distanceToCurrentTarget = Vector3.Distance(agent.position, currentTarget.position);
+        if(distanceToCurrentTarget > waypointDistance){
+            MoveToTarget(currentTarget);
+        }
+        return NodeState.SUCCESS;
+   }
 }
